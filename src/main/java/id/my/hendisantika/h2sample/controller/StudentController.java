@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -32,15 +33,17 @@ public class StudentController {
     private final NewTopic topic;
 
     @GetMapping("/save")
-    public void save() {
+    public String save() {
         log.info("---> Starting synchronous data load at {}", Instant.now());
         ldb.saveData();
         log.info("---> Synchronous data load completed at {}", Instant.now());
+        return "Starting synchronous data load " + LocalDateTime.now();
     }
 
     @GetMapping("/send-to-kafka-broker")
-    public void sendToKafka() {
+    public String sendToKafka() {
         List<Student> list = ldb.fetchAll();
         list.stream().forEach(x -> template.send(topic.name(), x));
+        return "Send to kafka broker " + LocalDateTime.now();
     }
 }
