@@ -1,6 +1,7 @@
 package id.my.hendisantika.h2sample.controller;
 
 import id.my.hendisantika.h2sample.entity.Student;
+import id.my.hendisantika.h2sample.service.LoadDataIntoDB;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.admin.NewTopic;
