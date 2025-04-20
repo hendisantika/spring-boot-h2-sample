@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.Instant;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -34,5 +35,11 @@ public class StudentController {
         log.info("---> Starting synchronous data load at {}", Instant.now());
         ldb.saveData();
         log.info("---> Synchronous data load completed at {}", Instant.now());
+    }
+
+    @GetMapping("/send-to-kafka-broker")
+    public void sendToKafka() {
+        List<Student> list = ldb.fetchAll();
+        list.stream().forEach(x -> template.send(topic.name(), x));
     }
 }
