@@ -1,8 +1,11 @@
 package id.my.hendisantika.h2sample.service;
 
+import id.my.hendisantika.h2sample.entity.Student;
 import id.my.hendisantika.h2sample.repository.StudentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -23,4 +26,12 @@ public class LoadDataIntoDB {
 
     private final int batch = 1000;
     private final int start = 0;
+
+    public void saveData() {
+        while (start < 100000) {
+            List<Student> student = getNextStudentBatch(start);
+            start += batch;
+            studentRepository.saveAll(student);
+        }
+    }
 }
