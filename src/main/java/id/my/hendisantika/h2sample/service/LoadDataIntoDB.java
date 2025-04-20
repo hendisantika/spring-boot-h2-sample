@@ -34,4 +34,9 @@ public class LoadDataIntoDB {
             studentRepository.saveAll(student);
         }
     }
+
+    public List<Student> fetchAll() {
+        return studentRepository.findAll();
+
+    }
 }
