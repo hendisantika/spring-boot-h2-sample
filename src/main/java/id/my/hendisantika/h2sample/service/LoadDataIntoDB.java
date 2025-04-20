@@ -5,6 +5,7 @@ import id.my.hendisantika.h2sample.repository.StudentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,7 +26,7 @@ public class LoadDataIntoDB {
     private final StudentRepository studentRepository;
 
     private final int batch = 1000;
-    private final int start = 0;
+    private int start = 0;
 
     public void saveData() {
         while (start < 100000) {
@@ -37,6 +38,14 @@ public class LoadDataIntoDB {
 
     public List<Student> fetchAll() {
         return studentRepository.findAll();
+    }
 
+    private List<Student> getNextStudentBatch(int start) {
+        List<Student> student = new ArrayList<Student>();
+        for (int i = start; i < start + batch; i++) {
+            Student st = Student.builder().name("NAME_" + i).rollNo(i + 1).standard((i + 1) % 10).build();
+            student.add(st);
+        }
+        return student;
     }
 }
