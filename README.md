@@ -1,5 +1,10 @@
 # Spring Boot H2 Sample
 
+[![Java CI with Maven](https://github.com/hendisantika/spring-boot-h2-sample/actions/workflows/maven.yml/badge.svg)](https://github.com/hendisantika/spring-boot-h2-sample/actions/workflows/maven.yml)
+![Java](https://img.shields.io/badge/Java-25-orange?logo=openjdk)
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4.1.1-6DB33F?logo=springboot)
+![Dependabot](https://img.shields.io/badge/Dependabot-enabled-025E8C?logo=dependabot)
+
 A comprehensive Spring Boot application demonstrating the use of H2 in-memory database with JPA, batch processing, and
 Apache Kafka integration for high-performance message processing.
 
@@ -9,11 +14,12 @@ batch operations and message streaming in Spring Boot applications.
 
 ## Technologies Used
 
-- Java 21
-- Spring Boot 3.4.4
+- Java 25
+- Spring Boot 4.1.1
 - Spring Data JPA
 - H2 Database (in-memory)
-- Apache Kafka
+- Apache Kafka (Spring for Apache Kafka, kafka-clients 4.4.0)
+- Jackson 3 (`tools.jackson`) for JSON serialization of Kafka messages
 - Docker & Docker Compose
 - Lombok
 - Maven
@@ -29,8 +35,8 @@ batch operations and message streaming in Spring Boot applications.
 
 ## Prerequisites
 
-- Java 21 or higher
-- Maven 3.6 or higher
+- Java 25 or higher (e.g. [Eclipse Temurin 25](https://adoptium.net/))
+- Maven 3.9 or higher (or use the bundled Maven Wrapper `./mvnw`)
 - Docker and Docker Compose (for running Kafka infrastructure)
 - OR Kafka server running on localhost:9092 (if not using Docker)
 
@@ -48,8 +54,11 @@ cd spring-boot-h2-sample
 The project includes a Docker Compose file to easily set up Kafka and Zookeeper:
 
 ```bash
-docker-compose up -d
+docker compose up -d
 ```
+
+> **Note:** The project includes `spring-boot-docker-compose`, so running the application with `./mvnw spring-boot:run`
+> will automatically start the services in `compose.yml` if Docker is available.
 
 This will start:
 
@@ -59,13 +68,13 @@ This will start:
 ### Build the Application
 
 ```bash
-mvn clean install
+./mvnw clean install
 ```
 
 ### Run the Application
 
 ```bash
-mvn spring-boot:run
+./mvnw spring-boot:run
 ```
 
 The application will start on port 8080.
@@ -144,6 +153,27 @@ The application demonstrates efficient batch processing by:
 - `service`: Contains the LoadDataIntoDB service for batch data loading
 - `controller`: Contains the StudentController with API endpoints
 - `config`: Contains Kafka configuration classes and custom serializers
+
+## Continuous Integration
+
+The [Java CI with Maven](.github/workflows/maven.yml) GitHub Actions workflow runs on every push and pull request to
+`main` (and can be triggered manually):
+
+- Sets up Temurin JDK 25 with Maven dependency caching
+- Builds and tests the project with `mvn -B package`
+- Submits the Maven dependency graph to GitHub (pushes to `main` only) to improve Dependabot alerts
+
+## Dependency Management
+
+[Dependabot](.github/dependabot.yml) keeps dependencies up to date:
+
+| Ecosystem      | Schedule                    | Notes                                                                            |
+|----------------|-----------------------------|----------------------------------------------------------------------------------|
+| Maven          | Daily, 05:00 Asia/Jakarta   | Grouped: Spring, Kafka, and other minor/patch updates                            |
+| GitHub Actions | Daily, 05:00 Asia/Jakarta   | All action updates grouped into a single PR                                      |
+| Docker Compose | Weekly (Monday), 05:00 WIB  | Images in `compose.yml`; Confluent major updates ignored (8.x drops ZooKeeper)   |
+
+Pull requests are labeled and use Conventional Commit prefixes (`build(deps)`, `ci(deps)`, `build(docker)`).
 
 ## Contributing
 
