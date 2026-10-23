@@ -1,9 +1,10 @@
 package id.my.hendisantika.h2sample.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import id.my.hendisantika.h2sample.entity.Student;
 import org.apache.kafka.common.errors.SerializationException;
 import org.apache.kafka.common.serialization.Serializer;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.util.Map;
 
@@ -19,7 +20,7 @@ import java.util.Map;
  * To change this template use File | Settings | File Templates.
  */
 public class CustomStudentSerializer implements Serializer<Student> {
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = JsonMapper.builder().build();
 
     @Override
     public void configure(Map<String, ?> configs, boolean isKey) {
