@@ -1,5 +1,6 @@
 version: 2
 updates:
+  # Maven dependencies (pom.xml)
   - package-ecosystem: maven
     directory: "/"
     schedule:
@@ -7,10 +8,71 @@ updates:
       time: '05:00'
       timezone: Asia/Jakarta
     open-pull-requests-limit: 10
-  - package-ecosystem: "github-actions"
+    target-branch: main
+    assignees:
+      - hendisantika
+    labels:
+      - dependencies
+      - java
+    commit-message:
+      prefix: "build(deps)"
+      prefix-development: "build(deps-dev)"
+      include: scope
+    groups:
+      spring-boot:
+        patterns:
+          - "org.springframework.boot*"
+          - "org.springframework*"
+      kafka:
+        patterns:
+          - "org.apache.kafka*"
+      maven-minor-patch:
+        update-types:
+          - minor
+          - patch
+
+  # GitHub Actions used in .github/workflows
+  - package-ecosystem: github-actions
     directory: "/"
     schedule:
-      interval: "daily"
+      interval: daily
       time: '05:00'
       timezone: Asia/Jakarta
     open-pull-requests-limit: 10
+    target-branch: main
+    assignees:
+      - hendisantika
+    labels:
+      - dependencies
+      - github_actions
+    commit-message:
+      prefix: "ci(deps)"
+      include: scope
+    groups:
+      github-actions:
+        patterns:
+          - "*"
+
+  # Docker images referenced in compose.yml
+  - package-ecosystem: docker-compose
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: monday
+      time: '05:00'
+      timezone: Asia/Jakarta
+    open-pull-requests-limit: 5
+    target-branch: main
+    assignees:
+      - hendisantika
+    labels:
+      - dependencies
+      - docker
+    commit-message:
+      prefix: "build(docker)"
+      include: scope
+    ignore:
+      # Confluent Platform 8.x removed ZooKeeper; compose.yml still runs Kafka in ZooKeeper mode
+      - dependency-name: "confluentinc/*"
+        update-types:
+          - version-update:semver-major
